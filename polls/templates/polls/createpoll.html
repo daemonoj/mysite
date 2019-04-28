@@ -1,0 +1,32 @@
+<form action="{% url 'polls:addpoll' %}" method="post" id='form'>
+{% csrf_token %}
+Question: <input type="text" name="question"><br>
+Choice 1: <input type="text" name="choice1"><br>
+Choice 2: <input type="text" name="choice2"><div id='container'></div><input type="button" onclick="addNewChoice()" value="+"><br>
+<input type="submit" value="Add Poll">
+</form>
+
+<script> 
+function addNewChoice(){
+	container = document.getElementById('container')
+	var i = container.childElementCount
+	container.appendChild(document.createElement('br'))
+	container.appendChild(document.createTextNode("Choice "+ str(i+2) + ": " )
+	var input = document.createElement('input')
+	input.type = 'text'
+	input.name = 'choice'+i+2
+	container.appendChild(input)
+	button = document.createElement('input')
+	button.type = 'button'
+	button.onclick='removeChoice'
+	buttonvalue='-'
+	container.appendChild(button)
+	
+}
+
+fucntion removeChoice(){
+	container = document.getElementById('container')
+	var i = container.childElementCount
+}
+
+</script>
