@@ -1,32 +1,87 @@
-<form action="{% url 'polls:addpoll' %}" method="post" id='form'>
-{% csrf_token %}
-Question: <input type="text" name="question"><br>
-Choice 1: <input type="text" name="choice1"><br>
-Choice 2: <input type="text" name="choice2"><div id='container'></div><input type="button" onclick="addNewChoice()" value="+"><br>
-<input type="submit" value="Add Poll">
-</form>
-
+<div id = 'main'>
+	<form action="{% url 'polls:addpoll' %}" method="post" id='form'>
+		{% csrf_token %}
+		Question: <input type="text" name="question"><br>
+		<table id='choices'>
+			<tr id="row1">
+				<td>Choice 1: </td>
+				<td><input type="text" name="choice1"></td>
+			</tr><br>
+			<tr id="row2">
+				<td>Choice 2: </td>
+				<td><input type="text" name="choice2"></td>
+				<td><input type="button" id="button-1" onclick="addNewChoice()" value="+"></td>
+			</tr>
+		</table>
+		<input type="submit" value="Add Poll">
+	</form>
+</div>
 <script> 
+
 function addNewChoice(){
-	container = document.getElementById('container')
-	var i = container.childElementCount
-	container.appendChild(document.createElement('br'))
-	container.appendChild(document.createTextNode("Choice "+ str(i+2) + ": " )
-	var input = document.createElement('input')
-	input.type = 'text'
-	input.name = 'choice'+i+2
-	container.appendChild(input)
-	button = document.createElement('input')
-	button.type = 'button'
-	button.onclick='removeChoice'
-	buttonvalue='-'
-	container.appendChild(button)
-	
+	table = document.getElementById('choices');
+	var i = table.getElementsByTagName('tr').length;
+	last_row = document.getElementById('row'+i);
+	last_row.deleteCell(-1);
+	if (i > 2){
+		last_row.deleteCell(-1);
+	}
+	let newRow = table.insertRow(-1);
+	newRow.id="row"+(i+1);
+	/*-----------------------------------------------------------------*/
+	let cell0 = newRow.insertCell(0);
+	let newText = document.createTextNode('Choice '+ (i+1)+': ');
+	cell0.appendChild(newText);
+	/*-----------------------------------------------------------------*/
+	let input = document.createElement('input');
+	input.type = 'text';
+	input.name = 'choice'+i;
+
+	cell1 = newRow.insertCell(1);
+	cell1.appendChild(input);
+	/*-----------------------------------------------------------------*/
+	addButton = createAddButton();
+	cell2 = newRow.insertCell(2);
+	cell2.appendChild(addButton);	
+	// addButton.innerHTML = "onclick='addNewChoice()'";
+	/*-----------------------------------------------------------------*/
+	removeButton = createRemoveButton();
+	cell3 = newRow.insertCell(3);
+	cell3.appendChild(removeButton);
 }
 
-fucntion removeChoice(){
-	container = document.getElementById('container')
-	var i = container.childElementCount
+function removeChoice(){
+	table = document.getElementById("choices");
+	table.deleteRow(-1);
+	var i = table.getElementsByTagName('tr').length;
+	lastRow = document.getElementById('row'+i);
+	cell1 = lastRow.insertCell(-1);
+	addButton = createAddButton();
+	cell1.appendChild(addButton);
+	if (i >2){
+		cell2 = lastRow.insertCell(-1);
+		removeButton = createRemoveButton();
+		cell2.appendChild(removeButton);
+	}
 }
 
+function createAddButton(){
+	addButton = document.createElement('input');
+	addButton.type = 'button';
+	addButton.value = '+';
+		addButton.onclick = function(){
+		addNewChoice();	
+	};
+	return addButton;
+}
+
+function createRemoveButton(){
+	removeButton = document.createElement('input');
+	removeButton.type = 'button';
+	removeButton.onclick = function(){
+		removeChoice();
+	};
+	removeButton.value='-';
+	return removeButton;
+}
 </script>
