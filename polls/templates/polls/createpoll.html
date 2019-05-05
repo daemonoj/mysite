@@ -1,5 +1,5 @@
 <div id = 'main'>
-	<form action="{% url 'polls:addpoll' %}" method="post" id='form'>
+	<form action="{% url 'polls:addpoll' %}" method="post" onsubmit="return validateForm()" id='form'>
 		{% csrf_token %}
 		Question: <input type="text" name="question"><br>
 		<table id='choices'>
@@ -43,11 +43,11 @@ function addNewChoice(){
 	addButton = createAddButton();
 	cell2 = newRow.insertCell(2);
 	cell2.appendChild(addButton);	
-	// addButton.innerHTML = "onclick='addNewChoice()'";
 	/*-----------------------------------------------------------------*/
 	removeButton = createRemoveButton();
 	cell3 = newRow.insertCell(3);
 	cell3.appendChild(removeButton);
+	console.log("Question: " + document.getElementsByName('question')[0].value);
 }
 
 function removeChoice(){
@@ -69,19 +69,32 @@ function createAddButton(){
 	addButton = document.createElement('input');
 	addButton.type = 'button';
 	addButton.value = '+';
-		addButton.onclick = function(){
-		addNewChoice();	
-	};
+	addButton.onclick = addNewChoice;	
 	return addButton;
 }
 
 function createRemoveButton(){
 	removeButton = document.createElement('input');
 	removeButton.type = 'button';
-	removeButton.onclick = function(){
-		removeChoice();
-	};
+	removeButton.onclick = removeChoice;
 	removeButton.value='-';
 	return removeButton;
+}
+
+function validateForm(){
+	table = document.getElementById('choices');
+	question = document.getElementsByName("question");
+	if (question.value == undefined){
+		alert("Question can't be empty");
+		return false;
+	}
+	for (i=1; i<=table.getElementsByTagName('tr').length; i++){
+		let temp = document.getElementsByName('choice'+i);
+		if (temp.value == undefined){
+			alert('Choice ' + i + "can't be empty!" )
+			return false;
+		}
+	}
+	return true;
 }
 </script>
